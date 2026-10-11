@@ -1,0 +1,91 @@
+/* Container anchored to the top-left logo area */
+#gemini-usage-tracker-container {
+  position: fixed;
+  top: 10px;  /* Adjust top & left to align centered over your Gemini star logo */
+  left: 8px;
+  z-index: 999;
+  user-select: none;
+  pointer-events: none; /* Passes empty space clicks straight through to Gemini */
+  transition: opacity 0.25s ease, transform 0.15s ease;
+}
+
+/* SVG container holding the pill, donut, and text */
+#gemini-pill-svg {
+  width: 36px;
+  height: 58px;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* Unified Pill Button with center logo cutout */
+#gemini-pill-btn {
+  fill: rgba(0, 0, 0, 0.001); /* Invisible but clickable */
+  pointer-events: fill; /* Catches hover/click everywhere on the pill, but NOT in the center hole */
+  cursor: pointer;
+  transition: fill 0.2s ease;
+}
+
+/* Hover effect: entire pill capsule lights up */
+#gemini-pill-btn:hover {
+  fill: #2F2F2F;
+}
+
+/* Active click feedback */
+#gemini-pill-btn:active {
+  fill: #383838;
+}
+
+/* Gauge circles (purely visual, clicks fall through to the pill button) */
+.gemini-circle-bg {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 2.5;
+  pointer-events: none;
+}
+
+.gemini-circle-fill {
+  fill: none;
+  stroke: url(#gemini-gradient);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  pointer-events: none;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+/* Percentage text inside the lower lobe of the pill */
+#gemini-usage-text {
+  font-family: 'Google Sans', 'Roboto', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  fill: #c4c7c5;
+  letter-spacing: 0.2px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none; /* Clicks fall through to the pill */
+  transition: fill 0.2s ease;
+}
+
+/* Brighten text on hover */
+#gemini-pill-svg:hover #gemini-usage-text {
+  fill: #e3e3e3;
+}
+
+/* Syncing pulse animation */
+#gemini-usage-tracker-container.syncing #gemini-pill-svg {
+  opacity: 0.5;
+  animation: pulse-sync 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-sync {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.85; }
+  100% { opacity: 0.4; }
+}
+
+/* Hidden state when toggled off via popup */
+#gemini-usage-tracker-container.tracker-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+}

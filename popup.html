@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 16px;
+      width: 260px;
+      background-color: #1e1f20;
+      color: #e3e3e3;
+      font-family: 'Google Sans', 'Roboto', sans-serif;
+      box-sizing: border-box;
+    }
+    .header {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+      color: #f1f3f4;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 12px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #3c4043;
+      border-radius: 20px;
+      transition: 0.25s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #ffffff;
+      border-radius: 50%;
+      transition: 0.25s;
+    }
+    input:checked + .slider {
+      background-color: #8ab4f8;
+    }
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+    .stats-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #9aa0a6;
+    }
+    .stat-value {
+      font-size: 13px;
+      font-weight: 500;
+      color: #e3e3e3;
+    }
+    .mini-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 2px;
+    }
+    .mini-fill {
+      height: 100%;
+      background: #8ab4f8;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    /* Reset label styling */
+    .stat-reset {
+      font-size: 11px;
+      color: #9aa0a6;
+      margin-top: 3px;
+      line-height: 1.3;
+    }
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .action-btn {
+      width: 100%;
+      padding: 8px 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #e3e3e3;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .action-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .action-btn:active {
+      transform: scale(0.98);
+    }
+    .action-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Usage Limits</div>
+  <div class="toggle-row">
+    <span>Always-on Display</span>
+    <label class="switch">
+      <input type="checkbox" id="toggleAlwaysOn" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+  <div class="stats-card">
+    <div class="stat-item">
+      <span class="stat-label">5-Hour Period</span>
+      <span class="stat-value" id="fiveHourStat">--%</span>
+      <div class="mini-track">
+        <div class="mini-fill" id="fiveHourFill" style="width: 0%;"></div>
+      </div>
+      <span class="stat-reset" id="fiveHourReset">Resets at --:--</span>
+    </div>
+
+    <div class="stat-item">
+      <span class="stat-label">Weekly Usage</span>
+      <span class="stat-value" id="weeklyStat">--%</span>
+      <div class="mini-track">
+        <div class="mini-fill" id="weeklyFill" style="width: 0%; background: #b388ff;"></div>
+      </div>
+      <span class="stat-reset" id="weeklyReset">Resets --</span>
+    </div>
+  </div>
+
+  <div class="button-group">
+    <button class="action-btn" id="syncBtn">
+      <span>↻ Sync</span>
+    </button>
+    <button class="action-btn" id="viewBtn">
+      <span>↗ View Limits</span>
+    </button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
