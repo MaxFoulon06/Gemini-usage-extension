@@ -17,6 +17,6 @@ function performSync(sendResponse) {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'triggerSync') {
     performSync(sendResponse);
-    return true; // Keep message channel open for async response
+    return true; // Keep the message channel open for async response
   }
 });
