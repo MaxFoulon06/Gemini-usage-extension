@@ -2,6 +2,12 @@ let syncTabId = null;
 let syncResponseCallback = null;
 let fallbackTimeout = null;
 
+const SYNC_URLS = {
+  gemini: 'https://gemini.google.com/usage',
+  chatgpt: 'https://chatgpt.com/settings/usage?tab=overview',
+  claude: 'https://claude.ai/settings/usage'
+};
+
 function closeSyncTab() {
   clearTimeout(fallbackTimeout);
   if (syncTabId) {
@@ -14,44 +20,38 @@ function closeSyncTab() {
   }
 }
 
-function performSync(sendResponse) {
-  // Close any orphaned tab from a previous sync
+function performSync(platform, sendResponse) {
   if (syncTabId) {
     chrome.tabs.remove(syncTabId).catch(() => {});
   }
 
   syncResponseCallback = sendResponse;
+  const targetUrl = SYNC_URLS[platform] || SYNC_URLS.gemini;
 
-  chrome.tabs.create(
-    { url: 'https://gemini.google.com/usage', active: false },
-    (tab) => {
-      syncTabId = tab.id;
+  chrome.tabs.create({ url: targetUrl, active: false }, (tab) => {
+    syncTabId = tab.id;
 
-      // Hard safety timeout (25s) in case Wi-Fi cuts out completely or Gemini errors
-      clearTimeout(fallbackTimeout);
-      fallbackTimeout = setTimeout(() => {
-        closeSyncTab();
-      }, 25000);
-    }
-  );
+    clearTimeout(fallbackTimeout);
+    fallbackTimeout = setTimeout(() => {
+      closeSyncTab();
+    }, 25000);
+  });
 }
 
-// Clean up state if the user manually closes the background tab
 chrome.tabs.onRemoved.addListener((tabId) => {
   if (tabId === syncTabId) {
     closeSyncTab();
   }
 });
 
-// Listen for sync triggers and scrape-completion signals
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'triggerSync') {
-    performSync(sendResponse);
-    return true; // Keep message channel open for async response
+    const platform = request.platform || 'gemini';
+    performSync(platform, sendResponse);
+    return true;
   }
 
   if (request.action === 'syncComplete') {
-    // Data successfully scraped: wait 1 second, then close tab
     setTimeout(() => {
       closeSyncTab();
     }, 1000);

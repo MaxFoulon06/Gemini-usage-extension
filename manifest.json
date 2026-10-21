@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Gemini Usage Tracker",
-  "version": "1.3",
-  "description": "Token usage tracker for Gemini with on-hover pill button and one-click sync.",
+  "name": "AI Usage Tracker (Gemini, ChatGPT, Claude)",
+  "version": "2.0",
+  "description": "Real-time usage limit tracker for Gemini, ChatGPT, and Claude with morphing pill UI.",
   "permissions": [
     "storage",
     "tabs"
@@ -21,7 +21,11 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://gemini.google.com/*"],
+      "matches": [
+        "https://gemini.google.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*"
+      ],
       "js": ["content.js"],
       "css": ["style.css"],
       "run_at": "document_idle"

@@ -1,8 +1,8 @@
-/* Main Container: Morphing Capsule Shell */
+/* Main Container: Morphing Shell */
 #gemini-usage-tracker-container {
   position: fixed;
   top: 10px;
-  left: 8px; /* Locked in */
+  left: 8px; /* Gemini baseline */
   z-index: 9999;
   width: 36px;
   height: 58px;
@@ -11,25 +11,125 @@
   box-sizing: border-box;
   user-select: none;
   pointer-events: none;
-  
-  /* Cuts a perfect permanent hole for the Gemini star logo */
+
+  /* Default Circular Cutout (Gemini only) */
   -webkit-mask-image: radial-gradient(circle at 18px 18px, transparent 13.5px, black 14px);
   mask-image: radial-gradient(circle at 18px 18px, transparent 13.5px, black 14px);
-  
+
   filter: drop-shadow(0 0px 0px rgba(0, 0, 0, 0));
-  
-  /* RETRACTION ANIMATION ONLY:
-     A smooth ease-in-out curve to prevent the violent "snap" back to the pill. */
+
   transition: 
-    width 0.3s ease-in-out,
-    height 0.3s ease-in-out,
-    border-radius 0.3s ease-in-out,
-    background-color 0.25s ease,
-    box-shadow 0.25s ease,
-    filter 0.3s ease;
+    top 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    left 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    width 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    height 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-/* ---------------- PILL VIEW (ALWAYS VISIBLE) ---------------- */
+/* ==========================================================================
+   CHATGPT: SINGLE UNIFIED CONTROL (EDIT POSITION AND SIZE HERE)
+   ========================================================================== */
+
+#gemini-usage-tracker-container.ai-chatgpt {
+  top: 34.5px;    /* <-- Adjust vertical position here */
+  left: 7px;   /* <-- Adjust horizontal position here */
+  width: 95px; /* <-- Adjust width here (matches "ChatGPT" text) */
+  height: 28px; /* <-- Adjust clickable height here */
+  border-radius: 8px;
+  pointer-events: auto;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  overflow: visible !important;
+}
+
+/* The clickable rounded button surface */
+.chatgpt-btn-surface {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  gap: 5px;
+}
+
+/* Lighter background when hovered */
+.chatgpt-btn-surface:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.chatgpt-bar-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.chatgpt-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.chatgpt-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10a37f, #34d399);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.chatgpt-bar-meta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.chatgpt-bar-pct {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9aa0a6;
+  letter-spacing: 0.2px;
+  transition: color 0.2s ease;
+}
+
+.chatgpt-btn-surface:hover .chatgpt-bar-pct {
+  color: #ffffff;
+}
+
+/* Hide the bar cleanly when ChatGPT's popout is expanded */
+#gemini-usage-tracker-container.ai-chatgpt.expanded .chatgpt-btn-surface {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   CLAUDE PILL
+   ========================================================================== */
+
+#gemini-usage-tracker-container.ai-claude {
+  top: 9px;
+  left: 8.5px;
+  width: 32px;
+  height: 42px;
+  border-radius: 8px;
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><mask id='m'><rect width='100%' height='100%' fill='white'/><rect x='4.5' y='4.5' width='23' height='23' rx='5' fill='black'/></mask></defs><rect width='100%' height='100%' fill='black' mask='url(%23m)'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><defs><mask id='m'><rect width='100%' height='100%' fill='white'/><rect x='4.5' y='4.5' width='23' height='23' rx='5' fill='black'/></mask></defs><rect width='100%' height='100%' fill='black' mask='url(%23m)'/></svg>");
+}
+
+/* ---------------- PILL VIEW (GEMINI & CLAUDE) ---------------- */
 #gemini-pill-view {
   position: absolute;
   top: 0;
@@ -39,6 +139,11 @@
   display: block;
   overflow: visible;
   pointer-events: none;
+}
+
+#gemini-usage-tracker-container.ai-claude #gemini-pill-view {
+  width: 32px;
+  height: 42px;
 }
 
 #gemini-pill-btn {
@@ -54,22 +159,23 @@
 .gemini-circle-bg {
   fill: none;
   stroke: rgba(255, 255, 255, 0.15);
-  stroke-width: 2.5;
+  stroke-width: 2.2;
+  stroke-linecap: round;
   pointer-events: none;
 }
 
 .gemini-circle-fill {
   fill: none;
-  stroke: url(#gemini-gradient);
-  stroke-width: 2.5;
+  stroke: url(#ai-primary-gradient);
+  stroke-width: 2.2;
   stroke-linecap: round;
   pointer-events: none;
-  transition: stroke-dashoffset 0.4s ease;
+  transition: stroke-dashoffset 0.4s ease, stroke-dasharray 0.4s ease;
 }
 
 #gemini-usage-text {
-  font-family: 'Google Sans', 'Roboto', sans-serif;
-  font-size: 11px;
+  font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 10.5px;
   font-weight: 500;
   fill: #c4c7c5;
   letter-spacing: 0.2px;
@@ -81,7 +187,8 @@
 
 #gemini-pill-view:hover #gemini-usage-text { fill: #e3e3e3; }
 
-#gemini-usage-tracker-container.syncing #gemini-pill-view {
+#gemini-usage-tracker-container.syncing #gemini-pill-view,
+#gemini-usage-tracker-container.syncing .chatgpt-btn-surface {
   opacity: 0.5;
   animation: pulse-sync 1.2s infinite ease-in-out;
 }
@@ -98,30 +205,49 @@
   transform: translateY(-4px);
 }
 
-/* ---------------- EXPANDED MENU (MORPHED RECTANGLE) ---------------- */
+/* ---------------- EXPANDED MENUS ---------------- */
 
+/* Gemini Custom Popout */
 #gemini-usage-tracker-container.expanded {
-  width: 271px;
-  height: 355px; 
-  border-radius: 16px;
-  
-  background-color: #2F2F2F; 
-  
-  /* The inset box-shadow that created the white line has been completely removed */
+  width: 260px !important;
+  height: 355px !important;
+  border-radius: 16px !important;
+  background-color: #2F2F2F;
   filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
 }
 
+/* ChatGPT Custom Popout */
+#gemini-usage-tracker-container.ai-chatgpt.expanded {
+  top: 10px !important;
+  left: 10px !important;
+  width: 285px !important;
+  height: 355px !important;
+  background-color: #1A1A1A !important;
+  border-radius: 14px !important;
+  -webkit-mask-image: none !important;
+  mask-image: none !important;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.6)) !important;
+}
+
+/* Claude Custom Popout */
+#gemini-usage-tracker-container.ai-claude.expanded {
+  width: 260px !important;
+  background-color: #232323;
+  border-radius: 8px !important;
+}
+
+/* Inner content adapts automatically */
 #gemini-expanded-menu {
   position: absolute;
   top: 0;
   left: 0;
-  width: 260px;
+  width: 100%;
   height: 355px;
-  padding: 56px 16px 24px 16px; /* Starts directly below the 54px pill bottom */
+  padding: 56px 16px 24px 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  font-family: 'Google Sans', 'Roboto', sans-serif;
+  font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #e3e3e3;
   opacity: 0;
   pointer-events: none;
@@ -131,23 +257,25 @@
 
 #gemini-usage-tracker-container.expanded #gemini-expanded-menu {
   opacity: 1;
+  pointer-events: none;
   transform: translateY(0);
-  transition: opacity 0.25s ease 0.2s, transform 0.25s ease 0.2s;
+  transition: opacity 0.25s ease 0.15s, transform 0.25s ease 0.15s;
 }
 
-/* Backdrop plates */
 .gxt-backdrop-blocker {
   position: absolute;
-  pointer-events: auto;
+  pointer-events: none;
   z-index: 1;
 }
+#gemini-usage-tracker-container.expanded .gxt-backdrop-blocker {
+  pointer-events: auto;
+}
 
-/* Header title: positioned right next to the circle at the top */
 #gemini-expanded-menu .gxt-header {
   position: absolute;
-  top: 5px;        /* Keep at 0 so it sits in the top padding zone */
-  left: 46px;      /* Positioned to the right of the 36px circle */
-  height: 36px;    /* Matches the circle height for vertical centering */
+  top: 14px;
+  left: 16px;
+  height: 36px;
   display: flex;
   align-items: center;
   font-size: 15px;
@@ -155,16 +283,23 @@
   color: #f1f3f4;
   letter-spacing: -0.1px;
   z-index: 2;
-  pointer-events: auto;
+  pointer-events: none;
   margin: 0;
 }
+#gemini-usage-tracker-container.expanded #gemini-expanded-menu .gxt-header {
+  pointer-events: auto;
+}
 
-/* Content rows: elevated to catch clicks */
 #gemini-expanded-menu .gxt-toggle-row,
 #gemini-expanded-menu .gxt-stats-card,
 #gemini-expanded-menu .gxt-button-group {
   position: relative;
   z-index: 2;
+  pointer-events: none;
+}
+#gemini-usage-tracker-container.expanded #gemini-expanded-menu .gxt-toggle-row,
+#gemini-usage-tracker-container.expanded #gemini-expanded-menu .gxt-stats-card,
+#gemini-usage-tracker-container.expanded #gemini-expanded-menu .gxt-button-group {
   pointer-events: auto;
 }
 
@@ -249,20 +384,23 @@
 /* Retract button placed at BOTTOM RIGHT */
 #gxt-retract-btn {
   position: absolute;
-  bottom: 3px; /* Locked in */
-  right: 5px;  /* Locked in */
+  bottom: 3px;
+  right: 5px;
   z-index: 3;
   background: transparent;
   border: none;
   color: #9aa0a6;
   cursor: pointer;
-  pointer-events: auto;
-  padding: 2px; /* Locked in */
+  pointer-events: none;
+  padding: 2px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+#gemini-usage-tracker-container.expanded #gxt-retract-btn {
+  pointer-events: auto;
 }
 
 #gxt-retract-btn:hover {
